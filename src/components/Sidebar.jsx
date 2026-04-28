@@ -81,21 +81,13 @@ export function Sidebar({ activePage, setActivePage }) {
         </button>
 
         <button
+          onClick={() => setActivePage('settings')}
           className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
             isDarkMode
               ? 'text-slate-300 hover:bg-slate-800'
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <Settings className="w-5 h-5" />
-          <span className="font-medium text-sm">Configurações</span>
-        </button>
-
-        <button
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-red-500 hover:bg-red-500 hover:text-white`}
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="font-medium text-sm">Sair</span>
         </button>
       </div>
     </div>

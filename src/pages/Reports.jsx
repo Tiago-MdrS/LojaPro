@@ -25,12 +25,12 @@ export function Reports() {
 
   // Filtered data based on date range
   const filteredSales = salesLast31Days.filter((sale) => {
-    const saleDate = sale.date.split('T')[0];
+const saleDate = sale.date?.split('T')[0] || '';
     return saleDate >= dateRange.startDate && saleDate <= dateRange.endDate;
   });
 
   const filteredExpenses = expenses.filter((exp) => {
-    const expDate = new Date(exp.date).toISOString().split('T')[0];
+    const expDate = exp.date?.split('T')[0] || '';
     return expDate >= dateRange.startDate && expDate <= dateRange.endDate;
   });
 
@@ -137,6 +137,29 @@ yPosition = doc.lastAutoTable?.finalY + 12 ?? 80;
   );
 
   doc.save(`relatorio-vendas-${dateRange.startDate}.pdf`);
+};
+const exportToExcel = () => {
+  const wb = XLSX.utils.book_new();
+
+  const salesSheet = XLSX.utils.json_to_sheet(
+    filteredSales.map((sale) => ({
+      Data: sale.date.split('T')[0],
+      Total: sale.total,
+    }))
+  );
+
+  const expensesSheet = XLSX.utils.json_to_sheet(
+    filteredExpenses.map((exp) => ({
+      Descrição: exp.description,
+      Data: new Date(exp.date).toLocaleDateString('pt-BR'),
+      Valor: exp.value,
+    }))
+  );
+
+  XLSX.utils.book_append_sheet(wb, salesSheet, 'Vendas');
+  XLSX.utils.book_append_sheet(wb, expensesSheet, 'Despesas');
+
+  XLSX.writeFile(wb, `relatorio-${dateRange.startDate}.xlsx`);
 };
 
   return (
