@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Pencil } from 'lucide-react';
 import { useStore } from '../store';
 
 export function Expenses() {
@@ -7,10 +7,13 @@ export function Expenses() {
     isDarkMode,
     expenses,
     addExpense,
+    updateExpense,
+    deleteExpense,
     getTotalExpenses,
   } = useStore();
 
   const [showModal, setShowModal] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
 
   const [formData, setFormData] = useState({
     description: '',
@@ -20,13 +23,30 @@ export function Expenses() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    addExpense({
-      description: formData.description,
-      value: Number(formData.value),
-    });
+    if (editingExpense) {
+      updateExpense(editingExpense.id, {
+        description: formData.description,
+        value: Number(formData.value),
+      });
+    } else {
+      addExpense({
+        description: formData.description,
+        value: Number(formData.value),
+      });
+    }
 
     setFormData({ description: '', value: '' });
+    setEditingExpense(null);
     setShowModal(false);
+  };
+
+  const handleEdit = (exp) => {
+    setEditingExpense(exp);
+    setFormData({
+      description: exp.description,
+      value: exp.value,
+    });
+    setShowModal(true);
   };
 
   const total = getTotalExpenses();
@@ -45,7 +65,11 @@ export function Expenses() {
         </div>
 
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEditingExpense(null);
+            setFormData({ description: '', value: '' });
+            setShowModal(true);
+          }}
           className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium"
         >
           <Plus className="w-5 h-5" />
@@ -73,7 +97,7 @@ export function Expenses() {
           {expenses.map((exp) => (
             <div
               key={exp.id}
-              className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} border rounded-lg p-4 flex justify-between`}
+              className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} border rounded-lg p-4 flex justify-between items-center`}
             >
               <div>
                 <p className="font-semibold">{exp.description}</p>
@@ -82,9 +106,26 @@ export function Expenses() {
                 </p>
               </div>
 
-              <span className="text-red-500 font-bold">
-                R$ {exp.value.toLocaleString('pt-BR')}
-              </span>
+              <div className="flex items-center gap-4">
+                <span className="text-red-500 font-bold">
+                  R$ {exp.value.toLocaleString('pt-BR')}
+                </span>
+
+                {/* Botões */}
+                <button
+                  onClick={() => handleEdit(exp)}
+                  className="p-2 text-blue-400 hover:bg-blue-500 hover:text-white rounded-lg"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => deleteExpense(exp.id)}
+                  className="p-2 text-red-400 hover:bg-red-500 hover:text-white rounded-lg"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -98,16 +139,11 @@ export function Expenses() {
               isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
             } border p-6 rounded-xl w-full max-w-md`}
           >
-            <h2
-              className={`text-xl font-bold mb-4 ${
-                isDarkMode ? 'text-white' : 'text-gray-900'
-              }`}
-            >
-              Nova Despesa
+            <h2 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              {editingExpense ? 'Editar Despesa' : 'Nova Despesa'}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Descrição */}
               <input
                 type="text"
                 placeholder="Descrição"
@@ -115,15 +151,14 @@ export function Expenses() {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                className={`w-full px-4 py-2 border rounded-lg outline-none ${
+                className={`w-full px-4 py-2 border rounded-lg ${
                   isDarkMode
-                    ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
-                    : 'bg-white border-slate-300 text-gray-900 placeholder:text-slate-500'
+                    ? 'bg-slate-700 border-slate-600 text-white'
+                    : 'bg-white border-slate-300 text-gray-900'
                 }`}
                 required
               />
 
-              {/* Valor */}
               <input
                 type="number"
                 placeholder="Valor"
@@ -131,33 +166,28 @@ export function Expenses() {
                 onChange={(e) =>
                   setFormData({ ...formData, value: e.target.value })
                 }
-                className={`w-full px-4 py-2 border rounded-lg outline-none ${
+                className={`w-full px-4 py-2 border rounded-lg ${
                   isDarkMode
-                    ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
-                    : 'bg-white border-slate-300 text-gray-900 placeholder:text-slate-500'
+                    ? 'bg-slate-700 border-slate-600 text-white'
+                    : 'bg-white border-slate-300 text-gray-900'
                 }`}
                 required
               />
 
-              {/* Botões */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                    isDarkMode
-                      ? 'bg-slate-700 hover:bg-slate-600 text-white'
-                      : 'bg-slate-200 hover:bg-slate-300 text-gray-900'
-                  }`}
+                  className="flex-1 bg-gray-400 text-white p-2 rounded-lg"
                 >
                   Cancelar
                 </button>
 
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                  className="flex-1 bg-red-600 text-white p-2 rounded-lg"
                 >
-                  Salvar
+                  {editingExpense ? 'Atualizar' : 'Salvar'}
                 </button>
               </div>
             </form>

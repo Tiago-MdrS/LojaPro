@@ -10,45 +10,29 @@ const getBrasiliaDate = () => {
 export const useStore = create(
   persist(
     (set, get) => ({
-      // Tema
       isDarkMode: true,
       toggleTheme: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
 
-      // Data comercial baseada no horário de Brasília
       currentDate: getBrasiliaDate(),
 
-      // Produtos
       products: [],
-
-      // Vendas do dia atual
       salesToday: [],
-
-      // Vendas dos últimos 31 dias
       salesLast31Days: [],
-
-      // Despesas
       expenses: [],
 
-      // Metas padrão
       targets: {
         daily: 0,
         monthly: 0,
       },
 
-      // Metas personalizadas por data
       dailyTargets: {},
-
-      // Histórico de movimentações
       inventory: [],
 
-      // Verifica se virou o dia no horário de Brasília
       checkAndResetDailyData: () =>
         set((state) => {
           const today = getBrasiliaDate();
 
-          if (state.currentDate === today) {
-            return state;
-          }
+          if (state.currentDate === today) return state;
 
           const previousDate = state.currentDate;
           const previousTotal = state.salesToday.reduce(
@@ -62,13 +46,7 @@ export const useStore = create(
 
           const updatedSalesLast31Days =
             previousTotal > 0 && !alreadyExists
-              ? [
-                  {
-                    date: previousDate,
-                    total: previousTotal,
-                  },
-                  ...state.salesLast31Days,
-                ].slice(0, 31)
+              ? [{ date: previousDate, total: previousTotal }, ...state.salesLast31Days].slice(0, 31)
               : state.salesLast31Days;
 
           return {
@@ -78,7 +56,6 @@ export const useStore = create(
           };
         }),
 
-      // Produtos
       addProduct: (product) =>
         set((state) => ({
           products: [
@@ -113,7 +90,6 @@ export const useStore = create(
           products: state.products.filter((p) => p.id !== id),
         })),
 
-      // Vendas
       addSale: (sale) =>
         set((state) => {
           const today = getBrasiliaDate();
@@ -147,13 +123,7 @@ export const useStore = create(
 
           const updatedSalesLast31Days =
             shouldResetDay && previousTotal > 0 && !alreadyExists
-              ? [
-                  {
-                    date: previousDate,
-                    total: previousTotal,
-                  },
-                  ...state.salesLast31Days,
-                ].slice(0, 31)
+              ? [{ date: previousDate, total: previousTotal }, ...state.salesLast31Days].slice(0, 31)
               : state.salesLast31Days;
 
           const newSale = {
@@ -169,19 +139,12 @@ export const useStore = create(
 
           return {
             currentDate: today,
-
-            salesToday: shouldResetDay
-              ? [newSale]
-              : [...state.salesToday, newSale],
-
+            salesToday: shouldResetDay ? [newSale] : [...state.salesToday, newSale],
             salesLast31Days: updatedSalesLast31Days,
 
             products: state.products.map((p) =>
               Number(p.id) === productId
-                ? {
-                    ...p,
-                    quantity: Number(p.quantity || 0) - quantitySold,
-                  }
+                ? { ...p, quantity: Number(p.quantity || 0) - quantitySold }
                 : p
             ),
 
@@ -201,7 +164,46 @@ export const useStore = create(
           };
         }),
 
-      // Despesas
+        deleteSale: (id) =>
+  set((state) => {
+    const saleToDelete = state.salesToday.find((s) => s.id === id);
+
+    if (!saleToDelete) return state;
+
+    const productId = Number(saleToDelete.productId);
+    const quantity = Number(saleToDelete.quantity || 0);
+
+    return {
+      salesToday: state.salesToday.filter((s) => s.id !== id),
+
+      // devolve o estoque
+      products: state.products.map((p) =>
+        Number(p.id) === productId
+          ? {
+              ...p,
+              quantity: Number(p.quantity || 0) + quantity,
+            }
+          : p
+      ),
+
+      // registra histórico
+      inventory: [
+        ...state.inventory,
+        {
+          id: Date.now(),
+          productId,
+          productName: saleToDelete.productName,
+          type: 'entrada',
+          quantity: quantity,
+          reason: 'Venda excluída',
+          date: new Date().toISOString(),
+          businessDate: getBrasiliaDate(),
+        },
+      ],
+    };
+  }),
+
+
       addExpense: (expense) =>
         set((state) => ({
           expenses: [
@@ -216,7 +218,24 @@ export const useStore = create(
           ],
         })),
 
-      // Metas padrão
+      updateExpense: (id, updates) =>
+        set((state) => ({
+          expenses: state.expenses.map((exp) =>
+            exp.id === id
+              ? {
+                  ...exp,
+                  ...updates,
+                  value: Number(updates.value ?? exp.value ?? 0),
+                }
+              : exp
+          ),
+        })),
+
+      deleteExpense: (id) =>
+        set((state) => ({
+          expenses: state.expenses.filter((exp) => exp.id !== id),
+        })),
+
       updateTargets: (daily, monthly) =>
         set({
           targets: {
@@ -225,7 +244,6 @@ export const useStore = create(
           },
         }),
 
-      // Criar/editar meta personalizada por dia
       setDailyTargetByDate: (date, value) =>
         set((state) => ({
           dailyTargets: {
@@ -234,7 +252,6 @@ export const useStore = create(
           },
         })),
 
-      // Apagar meta personalizada de um dia
       deleteDailyTargetByDate: (date) =>
         set((state) => {
           const updatedDailyTargets = { ...state.dailyTargets };
@@ -245,13 +262,11 @@ export const useStore = create(
           };
         }),
 
-      // Buscar meta do dia
       getDailyTargetByDate: (date) => {
         const state = get();
         return state.dailyTargets?.[date] || state.targets.daily || 0;
       },
 
-      // Estoque
       addInventoryMovement: (movement) =>
         set((state) => ({
           inventory: [
@@ -265,7 +280,6 @@ export const useStore = create(
           ],
         })),
 
-      // Cálculos
       getTotalRevenue: () => {
         const state = get();
         const today = getBrasiliaDate();
