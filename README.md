@@ -1,185 +1,181 @@
-# Loja Dashboard Pro
+# 🏪 Loja Dashboard Pro
 
-Dashboard profissional e completo para gerenciamento de loja com controle financeiro, estoque e metas.
-
-## 🚀 Features
-
-✨ **Interface Moderna**
-- Design SaaS profissional
-- Tema claro/escuro
-- Totalmente responsivo
-- Animações suaves
-
-💸 **Controle Financeiro**
-- Registro de vendas diárias
-- Controle de despesas
-- Cálculo automático de lucro
-- Resumos diário e mensal
-- Fluxo de caixa detalhado
-
-📦 **Gerenciamento de Estoque**
-- Cadastro de produtos
-- Controle de quantidade
-- Alertas de estoque baixo
-- Histórico de movimentações
-- Atualização em tempo real
-
-🎯 **Sistema de Metas**
-- Metas diárias e mensais
-- Barra de progresso
-- Comparação meta vs realizado
-- Alertas visuais
-
-📊 **Dashboard Interativo**
-- Gráficos de vendas (últimos 31 dias)
-- Fluxo de caixa visual
-- Produtos mais vendidos
-- KPIs em tempo real
-- Ticket médio
-
-📤 **Relatórios e Exportação**
-- Exportação em PDF
-- Exportação em Excel
-- Filtros por período
-- Resumos financeiros
-
-## 📋 Requisitos
-
-- Node.js 16+
-- npm ou yarn
-- Windows/Mac/Linux
-
-## 🔧 Instalação
-
-1. **Clone ou baixe o projeto:**
-```bash
-git clone seu-repositorio
-cd loja-dashboard
-```
-
-2. **Instale as dependências:**
-```bash
-npm install
-```
-
-## 💻 Desenvolvimento
-
-Para rodar em desenvolvimento:
-
-```bash
-# Terminal 1: Inicie o servidor Vite
-npm run dev
-
-# Terminal 2: Inicie o Electron (aguarde a porta 5173 ficar disponível)
-npm run electron-dev
-```
-
-## 🏗️ Build
-
-### Web (Vite)
-```bash
-npm run build
-```
-
-### Desktop (Electron)
-```bash
-npm run electron-builder
-```
-
-Isso vai gerar um arquivo `.exe` em `dist/` pronto para instalar.
-
-## 📁 Estrutura do Projeto
-
-```
-loja-dashboard/
-├── src/
-│   ├── components/
-│   │   ├── Sidebar.jsx        # Barra de navegação
-│   │   └── KPICard.jsx        # Cards de KPI
-│   ├── pages/
-│   │   ├── Dashboard.jsx      # Dashboard principal
-│   │   ├── Sales.jsx          # Página de vendas
-│   │   ├── Inventory.jsx      # Gerenciamento de estoque
-│   │   ├── Targets.jsx        # Metas
-│   │   └── Reports.jsx        # Relatórios
-│   ├── store.js               # Zustand store (estado global)
-│   ├── App.jsx                # Componente principal
-│   ├── main.jsx               # Entrada React
-│   └── index.css              # Estilos globais
-├── electron/
-│   ├── main.js                # Processo principal Electron
-│   └── preload.js             # Script de preload
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── index.html
-```
-
-## 🎨 Paleta de Cores
-
-- **Primary:** #0f172a (Azul escuro)
-- **Secondary:** #1e293b (Cinza escuro)
-- **Accent:** #3b82f6 (Azul)
-- **Success:** #10b981 (Verde)
-- **Warning:** #f59e0b (Amarelo)
-- **Danger:** #ef4444 (Vermelho)
-
-## 📱 Responsividade
-
-A aplicação é totalmente responsiva:
-- Mobile (< 768px)
-- Tablet (768px - 1024px)
-- Desktop (> 1024px)
-
-## 🔐 Segurança
-
-- Contexto isolado no Electron
-- Sem node integration
-- Preload script seguro
-- Validação de entrada
-
-## 📊 Dados de Exemplo
-
-O dashboard vem com dados de exemplo para demonstrar todas as funcionalidades:
-- 5 produtos em estoque
-- Vendas dos últimos 15 dias
-- Despesas mensais
-- Metas configuráveis
-
-## 🚀 Deploy
-
-### Desktop (.exe)
-```bash
-npm run electron-builder
-```
-
-### Web
-```bash
-npm run build
-# Fazer upload da pasta 'dist/' para seu servidor
-```
-
-## 📝 Licença
-
-Este projeto é fornecido como está.
-
-## 👨‍💻 Suporte
-
-Para dúvidas ou problemas:
-1. Verifique se todas as dependências estão instaladas
-2. Limpe a pasta `node_modules` e instale novamente
-3. Verifique se a porta 5173 não está em uso
-
-## 🎯 Próximas Features
-
-- [ ] Autenticação de usuário
-- [ ] Sincronização em nuvem
-- [ ] Multi-usuário
-- [ ] Dashboard em tempo real
-- [ ] Integração com APIs de pagamento
-- [ ] Mobile app
-- [ ] Análises avançadas
+Dashboard profissional para gerenciamento completo de loja, com controle financeiro, estoque, metas e relatórios.
 
 ---
 
-**Desenvolvido com ❤️ usando React, Vite, Electron e Tailwind CSS**
+## 🚀 Sobre o Projeto
+
+O **Loja Dashboard Pro** é um sistema moderno desenvolvido para facilitar o controle de vendas, despesas e desempenho financeiro de uma loja.
+
+O sistema foi pensado para ser simples de usar, mas com recursos avançados como metas inteligentes, relatórios e controle automático de estoque.
+
+---
+
+## ✨ Funcionalidades
+
+### 💸 Financeiro
+
+* Registro de vendas diárias
+* Controle de despesas
+* Cálculo automático de lucro
+* Ticket médio
+* Resumo financeiro em tempo real
+
+### 📦 Estoque
+
+* Cadastro de produtos
+* Controle automático de quantidade
+* Baixa automática ao vender
+* Alerta de estoque baixo
+* Histórico de movimentações
+
+### 🎯 Metas
+
+* Meta diária e mensal
+* Metas personalizadas por data
+* Barra de progresso automática
+* Reset automático diário (horário de Brasília)
+* Indicador de metas cumpridas e não cumpridas
+
+### 📊 Dashboard
+
+* Indicadores (KPIs)
+* Produtos mais vendidos
+* Fluxo de caixa
+* Visão geral da loja
+
+### 📤 Relatórios
+
+* Exportação em PDF
+* Exportação em Excel
+* Filtro por período
+* Análise de metas (cumpridas / não cumpridas)
+
+### 💾 Persistência
+
+* Armazenamento local com `localStorage`
+* Dados mantidos mesmo após fechar o sistema
+
+---
+
+## 🧠 Tecnologias Utilizadas
+
+* React
+* Vite
+* Zustand (gerenciamento de estado)
+* Tailwind CSS
+* jsPDF (relatórios PDF)
+* XLSX (exportação Excel)
+* Lucide Icons
+
+---
+
+## ⚙️ Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/loja-dashboard-pro.git
+
+# Acesse a pasta
+cd loja-dashboard-pro
+
+# Instale as dependências
+npm install
+
+# Rode o projeto
+npm run dev
+```
+
+---
+
+## 🖥️ Build para produção
+
+```bash
+npm run build
+```
+
+---
+
+## 📦 Gerar executável (.exe)
+
+Se estiver usando Electron:
+
+```bash
+npm run dist
+```
+
+---
+
+## 📁 Estrutura do Projeto
+
+```bash
+src/
+├── components/
+├── pages/
+│   ├── Dashboard.jsx
+│   ├── Sales.jsx
+│   ├── Inventory.jsx
+│   ├── Targets.jsx
+│   ├── Expenses.jsx
+│   └── Reports.jsx
+├── store/
+│   └── index.js
+└── App.jsx
+```
+
+---
+
+## 🔥 Diferenciais do Projeto
+
+* Interface moderna estilo SaaS
+* Sistema completo sem backend
+* Reset automático baseado no horário do Brasil
+* Controle inteligente de metas
+* Pronto para evolução para API ou SQLite
+
+---
+
+## 🧪 Melhorias Futuras
+
+* Integração com banco de dados (SQLite ou API)
+* Sistema de login
+* Multiusuário
+* Backup e restauração de dados
+* Dashboard com gráficos avançados
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Tiago Madeira**
+
+---
+
+## ⭐ Contribuição
+
+Sinta-se à vontade para contribuir com melhorias:
+
+```bash
+# Fork o projeto
+# Crie uma branch
+git checkout -b minha-feature
+
+# Commit
+git commit -m "feat: minha melhoria"
+
+# Push
+git push origin minha-feature
+```
+
+---
+
+## 💡 Observação
+
+Este projeto pode ser facilmente adaptado para uso comercial ou transformado em um SaaS completo.
