@@ -11,6 +11,7 @@ export function Sidebar({ activePage, setActivePage }) {
     { id: 'inventory', label: 'Estoque', icon: Package },
     { id: 'targets', label: 'Metas', icon: Target },
     { id: 'reports', label: 'Relatórios', icon: BarChart3 },
+    { id: 'expenses', label: 'Despesas', icon: DollarSign },
   ];
 
   return (

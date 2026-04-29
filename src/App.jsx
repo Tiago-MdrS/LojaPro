@@ -5,6 +5,7 @@ import { Sales } from './pages/Sales';
 import { Inventory } from './pages/Inventory';
 import { Targets } from './pages/Targets';
 import { Reports } from './pages/Reports';
+import { Expenses } from './pages/Expenses';
 import { useStore } from './store';
 import './index.css';
 
@@ -20,6 +21,8 @@ function App() {
         return <Sales />;
       case 'inventory':
         return <Inventory />;
+      case 'expenses':
+        return <Expenses />;
       case 'targets':
         return <Targets />;
       case 'reports':
@@ -32,6 +35,7 @@ function App() {
   return (
     <div className={`${isDarkMode ? 'dark bg-slate-950 text-white' : 'bg-slate-50 text-gray-900'} h-screen flex overflow-hidden`}>
       <Sidebar activePage={activePage} setActivePage={setActivePage} />
+
       <main className={`flex-1 overflow-auto ${isDarkMode ? 'bg-slate-950' : 'bg-slate-50'}`}>
         <div className="p-8 max-w-7xl">
           {renderPage()}

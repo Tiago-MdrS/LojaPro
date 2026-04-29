@@ -68,12 +68,12 @@ export function Inventory() {
             Gerencie produtos e quantidades
           </p>
         </div>
-        <button
+          <button
           onClick={() => handleOpenModal()}
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
         >
           <Plus className="w-5 h-5" />
-          Novo Produto
+          {products.length === 0 ? 'Novo Produto' : 'Cadastrar Mais'}
         </button>
       </div>
 
@@ -107,88 +107,149 @@ export function Inventory() {
       </div>
 
       {/* Products Table */}
-      <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} border ${isDarkMode ? 'border-slate-700' : 'border-slate-200'} rounded-xl overflow-hidden`}>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-700' : 'border-slate-200 bg-slate-50'}`}>
-                <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Produto
-                </th>
-                <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Preço
-                </th>
-                <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Quantidade
-                </th>
-                <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Mínimo
-                </th>
-                <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Status
-                </th>
-                <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr
-                  key={product.id}
-                  className={`border-b ${isDarkMode ? 'border-slate-700 hover:bg-slate-700' : 'border-slate-200 hover:bg-slate-50'} transition-colors`}
+      {/* Products Table / Empty State */}
+{products.length === 0 ? (
+  <div
+    className={`${
+      isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
+    } border rounded-xl p-12 flex flex-col items-center justify-center text-center`}
+  >
+    <div className="w-16 h-16 rounded-full bg-blue-600/10 flex items-center justify-center mb-4">
+      <Plus className="w-8 h-8 text-blue-500" />
+    </div>
+
+    <h2
+      className={`text-xl font-display font-bold mb-2 ${
+        isDarkMode ? 'text-white' : 'text-gray-900'
+      }`}
+    >
+      Nenhum produto cadastrado ainda
+    </h2>
+
+    <p
+      className={`text-sm max-w-md mb-6 ${
+        isDarkMode ? 'text-slate-400' : 'text-slate-600'
+      }`}
+    >
+      Comece adicionando seu primeiro produto para controlar estoque, preços,
+      quantidades e alertas de estoque baixo.
+    </p>
+
+    <button
+      onClick={() => handleOpenModal()}
+      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg font-medium transition-colors"
+    >
+      <Plus className="w-5 h-5" />
+      Cadastrar Primeiro Produto
+    </button>
+  </div>
+) : (
+  <div
+    className={`${
+      isDarkMode ? 'bg-slate-800' : 'bg-white'
+    } border ${
+      isDarkMode ? 'border-slate-700' : 'border-slate-200'
+    } rounded-xl overflow-hidden`}
+  >
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr
+            className={`border-b ${
+              isDarkMode
+                ? 'border-slate-700 bg-slate-700'
+                : 'border-slate-200 bg-slate-50'
+            }`}
+          >
+            <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+              Produto
+            </th>
+            <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+              Preço
+            </th>
+            <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+              Quantidade
+            </th>
+            <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+              Mínimo
+            </th>
+            <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+              Status
+            </th>
+            <th className={`px-6 py-4 text-left text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+              Ações
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {products.map((product) => (
+            <tr
+              key={product.id}
+              className={`border-b ${
+                isDarkMode
+                  ? 'border-slate-700 hover:bg-slate-700'
+                  : 'border-slate-200 hover:bg-slate-50'
+              } transition-colors`}
+            >
+              <td className={`px-6 py-4 text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                {product.name}
+              </td>
+
+              <td className={`px-6 py-4 text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                R$ {product.price.toLocaleString('pt-BR')}
+              </td>
+
+              <td className={`px-6 py-4 text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                {product.quantity}
+              </td>
+
+              <td className={`px-6 py-4 text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                {product.minQuantity}
+              </td>
+
+              <td className="px-6 py-4">
+                {product.quantity === 0 ? (
+                  <span className="inline-block bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    Fora de Estoque
+                  </span>
+                ) : product.quantity <= product.minQuantity ? (
+                  <span className="inline-block bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    Baixo
+                  </span>
+                ) : (
+                  <span className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    OK
+                  </span>
+                )}
+              </td>
+
+              <td className="px-6 py-4 flex gap-2">
+                <button
+                  onClick={() => handleOpenModal(product)}
+                  className={`p-2 rounded-lg transition-colors ${
+                    isDarkMode
+                      ? 'hover:bg-slate-600 text-slate-300'
+                      : 'hover:bg-slate-200 text-slate-600'
+                  }`}
                 >
-                  <td className={`px-6 py-4 text-sm font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {product.name}
-                  </td>
-                  <td className={`px-6 py-4 text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                    R$ {product.price.toLocaleString('pt-BR')}
-                  </td>
-                  <td className={`px-6 py-4 text-sm font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {product.quantity}
-                  </td>
-                  <td className={`px-6 py-4 text-sm ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-                    {product.minQuantity}
-                  </td>
-                  <td className="px-6 py-4">
-                    {product.quantity === 0 ? (
-                      <span className="inline-block bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        Fora de Estoque
-                      </span>
-                    ) : product.quantity <= product.minQuantity ? (
-                      <span className="inline-block bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        Baixo
-                      </span>
-                    ) : (
-                      <span className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                        OK
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 flex gap-2">
-                    <button
-                      onClick={() => handleOpenModal(product)}
-                      className={`p-2 rounded-lg transition-colors ${
-                        isDarkMode
-                          ? 'hover:bg-slate-600 text-slate-300'
-                          : 'hover:bg-slate-200 text-slate-600'
-                      }`}
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => deleteProduct(product.id)}
-                      className="p-2 rounded-lg hover:bg-red-500 hover:text-white text-slate-300 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  <Edit2 className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => deleteProduct(product.id)}
+                  className="p-2 rounded-lg hover:bg-red-500 hover:text-white text-slate-300 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
       {/* Modal */}
       {showModal && (
