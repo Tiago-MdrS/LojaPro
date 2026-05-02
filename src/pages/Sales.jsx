@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, ScanBarcode } from 'lucide-react';
 import { useStore } from '../store';
 
 export function Sales() {
@@ -15,16 +15,44 @@ export function Sales() {
   const [showModal, setShowModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [saleToCancel, setSaleToCancel] = useState(null);
+  const [barcodeInput, setBarcodeInput] = useState('');
 
   const [formData, setFormData] = useState({
     productId: products[0]?.id || '',
     quantity: 1,
   });
 
+  const selectedProduct = products.find(
+    (p) => Number(p.id) === Number(formData.productId)
+  );
+
+  const handleBarcodeSearch = (code) => {
+    const cleanCode = String(code || '').trim();
+
+    if (!cleanCode) return;
+
+    const product = products.find(
+      (p) => String(p.barcode || '').trim() === cleanCode
+    );
+
+    if (!product) {
+      alert('Produto não encontrado para este código de barras.');
+      setBarcodeInput('');
+      return;
+    }
+
+    setFormData({
+      productId: product.id,
+      quantity: 1,
+    });
+
+    setBarcodeInput('');
+  };
+
   const handleAddSale = (e) => {
     e.preventDefault();
 
-    const product = products.find((p) => p.id === Number(formData.productId));
+    const product = products.find((p) => Number(p.id) === Number(formData.productId));
     const quantity = Number(formData.quantity || 1);
 
     if (!product) return;
@@ -40,6 +68,7 @@ export function Sales() {
       quantity: 1,
     });
 
+    setBarcodeInput('');
     setShowModal(false);
   };
 
@@ -71,6 +100,7 @@ export function Sales() {
               productId: products[0]?.id || '',
               quantity: 1,
             });
+            setBarcodeInput('');
             setShowModal(true);
           }}
           disabled={products.length === 0}
@@ -150,7 +180,10 @@ export function Sales() {
               <tbody>
                 {salesToday.map((sale) => {
                   const product = products.find((p) => Number(p.id) === Number(sale.productId));
-                  const unitPrice = sale.quantity > 0 ? Number(sale.value || 0) / Number(sale.quantity || 1) : product?.price || 0;
+                  const unitPrice =
+                    sale.quantity > 0
+                      ? Number(sale.value || 0) / Number(sale.quantity || 1)
+                      : product?.price || 0;
 
                   return (
                     <tr
@@ -217,6 +250,44 @@ export function Sales() {
             <form onSubmit={handleAddSale} className="space-y-4">
               <div>
                 <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                  Código de Barras
+                </label>
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <ScanBarcode className={`absolute left-3 top-2.5 w-5 h-5 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`} />
+
+                    <input
+                      type="text"
+                      placeholder="Bipe o código e pressione Enter"
+                      value={barcodeInput}
+                      onChange={(e) => setBarcodeInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleBarcodeSearch(barcodeInput);
+                        }
+                      }}
+                      className={`w-full pl-10 pr-4 py-2 border rounded-lg ${
+                        isDarkMode
+                          ? 'bg-slate-700 border-slate-600 text-white placeholder:text-slate-400'
+                          : 'bg-white border-slate-300 text-gray-900 placeholder:text-slate-500'
+                      }`}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleBarcodeSearch(barcodeInput)}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+                  >
+                    Buscar
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                   Produto
                 </label>
 
@@ -233,6 +304,7 @@ export function Sales() {
                   {products.map((product) => (
                     <option key={product.id} value={product.id}>
                       {product.name} - R$ {Number(product.price || 0).toLocaleString('pt-BR')} | Estoque: {product.quantity}
+                      {product.barcode ? ` | Código: ${product.barcode}` : ''}
                     </option>
                   ))}
                 </select>
@@ -256,6 +328,28 @@ export function Sales() {
                   required
                 />
               </div>
+
+              {selectedProduct && (
+                <div className={`${isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-100 border-slate-300'} border rounded-lg p-3`}>
+                  <p className={`${isDarkMode ? 'text-slate-300' : 'text-slate-600'} text-sm`}>
+                    Produto selecionado
+                  </p>
+
+                  <p className={`${isDarkMode ? 'text-white' : 'text-gray-900'} font-semibold`}>
+                    {selectedProduct.name}
+                  </p>
+
+                  <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'} text-sm`}>
+                    Estoque disponível: {selectedProduct.quantity}
+                  </p>
+
+                  {selectedProduct.barcode && (
+                    <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'} text-sm`}>
+                      Código: {selectedProduct.barcode}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>

@@ -71,19 +71,21 @@ export const useStore = create(
         })),
 
       updateProduct: (id, updates) =>
-        set((state) => ({
-          products: state.products.map((p) =>
-            p.id === id
-              ? {
-                  ...p,
-                  ...updates,
-                  price: Number(updates.price ?? p.price ?? 0),
-                  quantity: Number(updates.quantity ?? p.quantity ?? 0),
-                  minQuantity: Number(updates.minQuantity ?? p.minQuantity ?? 0),
-                }
-              : p
-          ),
-        })),
+  set((state) => ({
+    products: state.products.map((p) =>
+      p.id === id
+        ? {
+            ...p,
+            ...updates,
+            name: updates.name ?? p.name ?? '',
+            barcode: updates.barcode ?? p.barcode ?? '',
+            price: Number(updates.price ?? p.price ?? 0),
+            quantity: Number(updates.quantity ?? p.quantity ?? 0),
+            minQuantity: Number(updates.minQuantity ?? p.minQuantity ?? 0),
+          }
+        : p
+    ),
+  })),
 
       deleteProduct: (id) =>
         set((state) => ({
